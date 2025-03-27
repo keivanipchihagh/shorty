@@ -1,9 +1,10 @@
 services:
   app:
+    image: shorty:latest
     container_name: shorty
     restart: always
     build:
       context: ..
       dockerfile: deployment/Dockerfile
     ports:
-      - "8000:8000"
+      - "7070:7070"

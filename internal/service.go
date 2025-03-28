@@ -31,7 +31,9 @@ func Start(config *configs.Config) {
 	urlService := urls.NewUrlService(urlRepo)
 	httpApi := http.NewHttpApi(urlService)
 
+	gin.SetMode(config.Http.Mode)
 	router := gin.Default()
+
 	// Register middlewares
 	router.Use(metrics.PrometheusMetrics())
 	// Register routes

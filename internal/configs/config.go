@@ -15,6 +15,7 @@ type Config struct {
 type HttpConfig struct {
 	Host string
 	Port int
+	Mode string
 }
 
 type PostgresConfig struct {
@@ -38,6 +39,7 @@ func NewConfig() *Config {
 	http := HttpConfig{
 		Host: viper.GetString("HTTP_HOST"),
 		Port: viper.GetInt("HTTP_PORT"),
+		Mode: viper.GetString("HTTP_MODE"),
 	}
 
 	postgres := PostgresConfig{

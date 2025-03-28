@@ -9,13 +9,13 @@ import (
 )
 
 type Option struct {
-	Host           string
-	Port           int
-	Username       string
-	Password       string
-	Database       string
-	MinConnections int
-	MaxConnections int
+	Host     string
+	Port     int
+	Username string
+	Password string
+	Database string
+	MinConns int
+	MaxConns int
 }
 
 type PGXDatabase struct {
@@ -30,8 +30,8 @@ func NewPGXPostgres(option Option) *PGXDatabase {
 	config.ConnConfig.Database = option.Database
 	config.ConnConfig.User = option.Username
 	config.ConnConfig.Password = option.Password
-	config.MaxConns = int32(option.MaxConnections)
-	config.MinConns = int32(option.MinConnections)
+	config.MaxConns = int32(option.MaxConns)
+	config.MinConns = int32(option.MinConns)
 
 	// Create the connection pool
 	pool, err := pgxpool.ConnectConfig(context.Background(), config)

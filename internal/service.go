@@ -6,24 +6,35 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/keivanipchihagh/shorty/api/http"
 	"github.com/keivanipchihagh/shorty/internal/configs"
+	"github.com/keivanipchihagh/shorty/internal/db/postgres"
 	"github.com/keivanipchihagh/shorty/internal/metrics"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func Start() {
+func Start(config *configs.Config) {
 
-	configs := configs.NewConfig()
+	db := postgres.NewPGXPostgres(postgres.Option{
+		Host:     config.Postgres.Host,
+		Port:     config.Postgres.Port,
+		Username: config.Postgres.Username,
+		Password: config.Postgres.Password,
+		Database: config.Postgres.Database,
+		MinConns: config.Postgres.MinConns,
+		MaxConns: config.Postgres.MaxConns,
+	})
+	defer db.Close()
+
 	router := gin.Default()
-
-	// Register Prometheus middleware
+	// Register Middlewares
 	router.Use(metrics.PrometheusMetrics())
-
-	// Register API routes
-	router.GET("/", http.HelloWorld)
-
-	// Expose Prometheus metrics
+	// Register routes
+	router.POST("/urls", http.Create)
+	router.GET("/urls", http.GetAll)
+	router.GET("/urls/:id", http.GetById)
+	router.PUT("/urls/:id", http.Update)
+	router.DELETE("/urls/:id", http.Delete)
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
-	address := fmt.Sprintf("%s:%d", configs.Host, configs.Port)
+	address := fmt.Sprintf("%s:%d", config.Http.Host, config.Http.Port)
 	router.Run(address)
 }

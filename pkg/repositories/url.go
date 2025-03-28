@@ -4,25 +4,25 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/keivanipchihagh/shorty/pkg/models"
 )
 
-type RepositoryInterface interface {
+type UrlRepo interface {
 	Create(url *models.URL) (*models.URL, error)
 	GetById(id int) (*models.URL, error)
 	GetAll() ([]models.URL, error)
 }
 
-type Repository struct {
-	db *pgx.Conn
+type UrlRepoImp struct {
+	db *pgxpool.Pool
 }
 
-func NewRepository(db *pgx.Conn) *Repository {
-	return &Repository{db: db}
+func NewUrlRepo(db *pgxpool.Pool) UrlRepo {
+	return &UrlRepoImp{db: db}
 }
 
-func (r *Repository) Create(url *models.URL) (*models.URL, error) {
+func (r *UrlRepoImp) Create(url *models.URL) (*models.URL, error) {
 	query := `
 		INSERT INTO urls (original, shortened)
 		VALUES ($1, $2)
@@ -30,14 +30,20 @@ func (r *Repository) Create(url *models.URL) (*models.URL, error) {
 	`
 	row := r.db.QueryRow(context.Background(), query, url.Original, url.Shortened)
 
-	if err := row.Scan(&url.ID, &url.Original, &url.Shortened, &url.CreatedAt, &url.ExpiresAt); err != nil {
+	if err := row.Scan(
+		&url.ID,
+		&url.Original,
+		&url.Shortened,
+		&url.CreatedAt,
+		&url.ExpiresAt,
+	); err != nil {
 		return nil, fmt.Errorf("error creating URL: %v", err)
 	}
 
 	return url, nil
 }
 
-func (r *Repository) GetById(id int) (*models.URL, error) {
+func (r *UrlRepoImp) GetById(id int) (*models.URL, error) {
 	query := `
 		SELECT id, original, shortened, created_at, expires_at
 		FROM urls
@@ -53,7 +59,7 @@ func (r *Repository) GetById(id int) (*models.URL, error) {
 	return &url, nil
 }
 
-func (r *Repository) GetAll() ([]models.URL, error) {
+func (r *UrlRepoImp) GetAll() ([]models.URL, error) {
 	query := `
 		SELECT id, original, shortened, created_at, expires_at
 		FROM urls

@@ -6,7 +6,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/keivanipchihagh/shorty/api"
 	"github.com/keivanipchihagh/shorty/internal/services/urls"
 	"github.com/keivanipchihagh/shorty/pkg/models"
 )
@@ -19,7 +18,7 @@ func NewHttpApi(UrlService urls.UrlService) *HttpApi {
 	return &HttpApi{UrlService: UrlService}
 }
 
-// POST
+// POST: /urls
 func (s *HttpApi) Create(ctx *gin.Context) {
 	var url *models.URL
 	if err := ctx.BindJSON(&url); err != nil {
@@ -27,11 +26,15 @@ func (s *HttpApi) Create(ctx *gin.Context) {
 		return
 	}
 
-	url, err := s.UrlService.Create(url)
-	fmt.Println(url, err)
+	if err := s.UrlService.Create(url); err != nil {
+		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.IndentedJSON(http.StatusCreated, url)
 }
 
-// GET
+// GET: /urls/:id
 func (s *HttpApi) GetById(ctx *gin.Context) {
 	id, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
@@ -40,13 +43,22 @@ func (s *HttpApi) GetById(ctx *gin.Context) {
 	}
 
 	url, err := s.UrlService.GetById(id)
-	fmt.Println(url, err)
+	if err != nil {
+		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.IndentedJSON(http.StatusBadRequest, url)
 }
 
-// GET
+// GET: /urls
 func (s *HttpApi) GetAll(ctx *gin.Context) {
-	ctx.IndentedJSON(http.StatusNotImplemented, gin.H{"error": api.ErrNotImplemented.Error()})
-
 	urls, err := s.UrlService.GetAll()
-	fmt.Println(urls, err)
+	if err != nil {
+		ctx.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		fmt.Println(err)
+		return
+	}
+
+	ctx.IndentedJSON(http.StatusOK, urls)
 }

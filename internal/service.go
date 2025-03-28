@@ -27,10 +27,8 @@ func Start(config *configs.Config) {
 	})
 	defer db.Close()
 
-	// Define services
 	urlRepo := repositories.NewUrlRepo(db.Pool)
 	urlService := urls.NewUrlService(urlRepo)
-
 	httpApi := http.NewHttpApi(urlService)
 
 	router := gin.Default()

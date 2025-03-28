@@ -1,6 +1,8 @@
 package urls
 
 import (
+	"time"
+
 	"github.com/keivanipchihagh/shorty/pkg/models"
 	"github.com/keivanipchihagh/shorty/pkg/repositories"
 )
@@ -13,8 +15,13 @@ func NewUrlService(UrlRepo repositories.UrlRepo) UrlService {
 	return UrlService{UrlRepo: UrlRepo}
 }
 
-func (s *UrlService) Create(*models.URL) (*models.URL, error) {
-	return nil, nil
+func (s *UrlService) Create(url *models.URL) error {
+
+	url.CreatedAt = time.Now()
+	url.ExpiresAt = time.Now().Add(time.Hour)
+
+	err := s.UrlRepo.Create(url)
+	return err
 }
 
 func (s *UrlService) GetById(id int) (*models.URL, error) {

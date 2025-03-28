@@ -9,7 +9,7 @@ import (
 )
 
 type UrlRepo interface {
-	Create(url *models.URL) (*models.URL, error)
+	Create(url *models.URL) error
 	GetById(id int) (*models.URL, error)
 	GetAll() ([]models.URL, error)
 }
@@ -22,25 +22,13 @@ func NewUrlRepo(db *pgxpool.Pool) UrlRepo {
 	return &UrlRepoImp{db: db}
 }
 
-func (r *UrlRepoImp) Create(url *models.URL) (*models.URL, error) {
+func (r *UrlRepoImp) Create(url *models.URL) error {
 	query := `
-		INSERT INTO urls (original, shortened)
-		VALUES ($1, $2)
-		RETURNING id, original, shortened, created_at, expires_at
+		INSERT INTO urls (original, shortened, expires_at)
+		VALUES ($1, $2, $3)
 	`
-	row := r.db.QueryRow(context.Background(), query, url.Original, url.Shortened)
-
-	if err := row.Scan(
-		&url.ID,
-		&url.Original,
-		&url.Shortened,
-		&url.CreatedAt,
-		&url.ExpiresAt,
-	); err != nil {
-		return nil, fmt.Errorf("error creating URL: %v", err)
-	}
-
-	return url, nil
+	_, err := r.db.Exec(context.Background(), query, url.Original, url.Shortened, url.ExpiresAt)
+	return err
 }
 
 func (r *UrlRepoImp) GetById(id int) (*models.URL, error) {
@@ -52,8 +40,14 @@ func (r *UrlRepoImp) GetById(id int) (*models.URL, error) {
 	row := r.db.QueryRow(context.Background(), query, id)
 
 	var url models.URL
-	if err := row.Scan(&url.ID, &url.Original, &url.Shortened, &url.CreatedAt, &url.ExpiresAt); err != nil {
-		return nil, fmt.Errorf("error reading URL")
+	if err := row.Scan(
+		&url.ID,
+		&url.Original,
+		&url.Shortened,
+		&url.CreatedAt,
+		&url.ExpiresAt,
+	); err != nil {
+		return nil, err
 	}
 
 	return &url, nil
@@ -73,14 +67,16 @@ func (r *UrlRepoImp) GetAll() ([]models.URL, error) {
 	var urls []models.URL
 	for rows.Next() {
 		var url models.URL
-		if err := rows.Scan(&url.ID, &url.Original, &url.Shortened, &url.CreatedAt, &url.ExpiresAt); err != nil {
-			return nil, fmt.Errorf("error scanning URL: %v", err)
+		if err := rows.Scan(
+			&url.ID,
+			&url.Original,
+			&url.Shortened,
+			&url.CreatedAt,
+			&url.ExpiresAt,
+		); err != nil {
+			return nil, err
 		}
 		urls = append(urls, url)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("error iterating over rows: %v", err)
 	}
 
 	return urls, nil

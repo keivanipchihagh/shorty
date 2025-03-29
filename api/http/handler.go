@@ -42,7 +42,7 @@ func (s *HttpApi) GetById(ctx *gin.Context) {
 		return
 	}
 
-	url, err := s.UrlService.GetById(id)
+	url, err := s.UrlService.GetById(int64(id))
 	if err != nil {
 		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

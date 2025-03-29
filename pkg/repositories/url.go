@@ -10,7 +10,7 @@ import (
 
 type UrlRepo interface {
 	Create(url *models.URL) error
-	GetById(id int) (*models.URL, error)
+	GetById(id int64) (*models.URL, error)
 	GetAll() ([]models.URL, error)
 }
 
@@ -24,14 +24,14 @@ func NewUrlRepo(db *pgxpool.Pool) UrlRepo {
 
 func (r *UrlRepoImp) Create(url *models.URL) error {
 	query := `
-		INSERT INTO urls (original, shortened, expires_at)
-		VALUES ($1, $2, $3)
+		INSERT INTO urls (id, original, shortened, expires_at)
+		VALUES ($1, $2, $3, $4)
 	`
-	_, err := r.db.Exec(context.Background(), query, url.Original, url.Shortened, url.ExpiresAt)
+	_, err := r.db.Exec(context.Background(), query, url.ID, url.Original, url.Shortened, url.ExpiresAt)
 	return err
 }
 
-func (r *UrlRepoImp) GetById(id int) (*models.URL, error) {
+func (r *UrlRepoImp) GetById(id int64) (*models.URL, error) {
 	query := `
 		SELECT id, original, shortened, created_at, expires_at
 		FROM urls

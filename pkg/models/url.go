@@ -3,7 +3,7 @@ package models
 import "time"
 
 type URL struct {
-	ID        int       `json:"id"`         // Unique identifier for the URL entry
+	ID        int64     `json:"id"`         // Unique identifier for the URL entry
 	Original  string    `json:"original"`   // Original URL that is being shortened
 	Shortened string    `json:"shortened"`  // Identifier for the shortened URL
 	CreatedAt time.Time `json:"created_at"` // Time when the URL entry was created

@@ -3,6 +3,7 @@ package urls
 import (
 	"time"
 
+	"github.com/keivanipchihagh/shorty/internal/services/kgs"
 	"github.com/keivanipchihagh/shorty/pkg/models"
 	"github.com/keivanipchihagh/shorty/pkg/repositories"
 )
@@ -20,11 +21,18 @@ func (s *UrlService) Create(url *models.URL) error {
 	url.CreatedAt = time.Now()
 	url.ExpiresAt = time.Now().Add(time.Hour)
 
-	err := s.UrlRepo.Create(url)
+	id, shortened, err := kgs.GenerateId()
+	if err != nil {
+		return err
+	}
+	url.Shortened = shortened
+	url.ID = id
+
+	err = s.UrlRepo.Create(url)
 	return err
 }
 
-func (s *UrlService) GetById(id int) (*models.URL, error) {
+func (s *UrlService) GetById(id int64) (*models.URL, error) {
 	url, err := s.UrlRepo.GetById(id)
 	return url, err
 }

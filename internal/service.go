@@ -2,7 +2,8 @@ package internal
 
 import (
 	"fmt"
-	"log"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
 	"github.com/keivanipchihagh/shorty/api/http"
@@ -33,6 +34,7 @@ func Start(config *configs.Config) {
 
 	gin.SetMode(config.Http.Mode)
 	router := gin.Default()
+	log.Info(fmt.Sprintf("Gin running in %v mode", config.Http.Mode))
 
 	// Register middlewares
 	router.Use(metrics.PrometheusMetrics())
@@ -43,6 +45,7 @@ func Start(config *configs.Config) {
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	address := fmt.Sprintf("%s:%d", config.Http.Host, config.Http.Port)
+	log.Info(fmt.Sprintf("Gin running on %v", address))
 	if err := router.Run(address); err != nil {
 		log.Fatalf("Error starting server: %v\n", err)
 	}

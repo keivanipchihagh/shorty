@@ -1,0 +1,104 @@
+{
+	"info": {
+		"_postman_id": "b7340a7b-18c1-40c8-b5c2-87de6ca5aa3a",
+		"name": "shorty",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18527721"
+	},
+	"item": [
+		{
+			"name": "GetAll",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:7070/urls",
+					"host": [
+						"localhost"
+					],
+					"port": "7070",
+					"path": [
+						"urls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"original\": \"keivanipchihagh.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:7070/urls",
+					"host": [
+						"localhost"
+					],
+					"port": "7070",
+					"path": [
+						"urls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Metrics",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:7070/metrics",
+					"host": [
+						"localhost"
+					],
+					"port": "7070",
+					"path": [
+						"metrics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:7070/urls/7",
+					"host": [
+						"localhost"
+					],
+					"port": "7070",
+					"path": [
+						"urls",
+						"7"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

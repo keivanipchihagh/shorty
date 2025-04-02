@@ -12,6 +12,7 @@ type UrlRepo interface {
 	Create(url *models.URL) error
 	GetById(id int64) (*models.URL, error)
 	GetAll() ([]models.URL, error)
+	GetByShortened(shortened string) (*models.URL, error)
 }
 
 type UrlRepoImp struct {
@@ -20,6 +21,28 @@ type UrlRepoImp struct {
 
 func NewUrlRepo(db *pgxpool.Pool) UrlRepo {
 	return &UrlRepoImp{db: db}
+}
+
+func (r *UrlRepoImp) GetByShortened(shortened string) (*models.URL, error) {
+	query := `
+		SELECT id, original, shortened, created_at, expires_at
+		FROM urls
+		WHERE shortened = $1
+	`
+	row := r.db.QueryRow(context.Background(), query, shortened)
+
+	var url models.URL
+	if err := row.Scan(
+		&url.ID,
+		&url.Original,
+		&url.Shortened,
+		&url.CreatedAt,
+		&url.ExpiresAt,
+	); err != nil {
+		return nil, err
+	}
+
+	return &url, nil
 }
 
 func (r *UrlRepoImp) Create(url *models.URL) error {

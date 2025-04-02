@@ -37,6 +37,11 @@ func (s *UrlService) GetById(id int64) (*models.URL, error) {
 	return url, err
 }
 
+func (s *UrlService) GetByShortened(shortened string) (*models.URL, error) {
+	url, err := s.UrlRepo.GetByShortened(shortened)
+	return url, err
+}
+
 func (s *UrlService) GetAll() ([]models.URL, error) {
 	urls, err := s.UrlRepo.GetAll()
 	return urls, err

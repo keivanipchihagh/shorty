@@ -62,3 +62,23 @@ func (s *HttpApi) GetAll(ctx *gin.Context) {
 
 	ctx.IndentedJSON(http.StatusOK, urls)
 }
+
+// GET: /r/:shortened
+func (s *HttpApi) Redirect(ctx *gin.Context) {
+	shortened := ctx.Param("shortened")
+
+	// Retrieve the URL
+	url, err := s.UrlService.GetByShortened(shortened)
+	if err != nil {
+		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// If the URL is empty or not found, return an error
+	if url == nil || url.Original == "" {
+		ctx.IndentedJSON(http.StatusNotFound, gin.H{"error": "URL not found"})
+		return
+	}
+
+	ctx.Redirect(http.StatusMovedPermanently, url.Original)
+}

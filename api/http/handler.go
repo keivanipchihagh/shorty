@@ -109,3 +109,8 @@ func (s *HttpApi) Redirect(ctx *gin.Context) {
 
 	ctx.Redirect(http.StatusPermanentRedirect, url.Original)
 }
+
+// GET: /health
+func (s *HttpApi) Health(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"status": "healthy"})
+}

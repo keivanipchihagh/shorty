@@ -43,6 +43,7 @@ func Start(config *configs.Config) {
 	router.POST("/urls", httpApi.Create)
 	router.GET("/urls", httpApi.GetAll)
 	router.GET("/urls/:id", httpApi.GetById)
+	router.GET("/health", httpApi.Health)
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 
 	address := fmt.Sprintf("%s:%d", config.Http.Host, config.Http.Port)

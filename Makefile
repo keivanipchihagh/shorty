@@ -1,2 +1,2 @@
 docker:
-	docker compose -f deployment/docker-compose.yaml up -d --build
+	docker compose --env-file .env -f deployment/docker-compose.yaml up -d --build

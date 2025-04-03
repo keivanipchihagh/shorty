@@ -1,8 +1,10 @@
 package internal
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/go-redis/redis/v8"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +19,7 @@ import (
 
 func Start(config *configs.Config) {
 
+	// PostgreSQL
 	db := postgres.NewPGXPostgres(postgres.Option{
 		Host:     config.Postgres.Host,
 		Port:     config.Postgres.Port,
@@ -28,8 +31,20 @@ func Start(config *configs.Config) {
 	})
 	defer db.Close()
 
+	// Redis
+	redis := redis.NewClient(&redis.Options{
+		Addr: fmt.Sprintf("%s:%d", config.Redis.Host, config.Redis.Port),
+		DB: config.Redis.Database,
+	})
+	_, err := redis.Ping(context.Background()).Result()
+	if err != nil {
+		log.Fatalf("Error connecting to Redis: %v\n", err)
+	}
+	defer redis.Close()
+	log.Info("Connected to Redis successfully!")
+
 	urlRepo := repositories.NewUrlRepo(db.Pool)
-	urlService := urls.NewUrlService(urlRepo)
+	urlService := urls.NewUrlService(urlRepo, redis)
 	httpApi := http.NewHttpApi(urlService)
 
 	gin.SetMode(config.Http.Mode)

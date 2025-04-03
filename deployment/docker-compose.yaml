@@ -8,3 +8,55 @@ services:
       dockerfile: deployment/Dockerfile
     ports:
       - "7070:7070"
+
+    depends_on:
+      - redis
+      - postgres
+  
+  redis:
+    image: redis:7.0-alpine
+    container_name: shorty-redis
+    restart: always
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - ../volume/redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      interval: 30s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 64M
+        reservations:
+          cpus: '0.125'
+          memory: 32M
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: shorty-postgres
+    restart: always
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "postgres"]
+      timeout: 10s
+      interval: 30s
+      retries: 3
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    volumes:
+      - ../volume/postgres-data:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M

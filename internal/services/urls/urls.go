@@ -38,11 +38,6 @@ func (s *UrlService) Create(url *models.URL) error {
 	return err
 }
 
-func (s *UrlService) GetById(id int64) (*models.URL, error) {
-	url, err := s.UrlRepo.GetById(id)
-	return url, err
-}
-
 func (s *UrlService) GetByShortened(shortened string) (*models.URL, error) {
 
 	// Check if there is a value in redis

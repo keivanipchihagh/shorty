@@ -6,33 +6,37 @@
 
 Make your URLs shorter in Go
 
+## Table of Contents
 * [Endpoints](#Endpoints)
 * [System Design](#system-design)
+* [References](#references)
 
 ## Endpoints
 | **Path** | **Method** | **Cache** | **Description** 
 | --- | --- | -- | -- |
 | `/:shortened` | GET | Yes | Redirects to the original URL
-| `/urls` | POST | No | Creates a new URL
+| `/urls` | POST | No | Creates a new shortened URL
 | `/urls` | GET | No | Returns all URLs available
 | `/urls:id` | GET | No | Returns a specific URL by ID
-| `/metrics` | GET | No | Returns Prometheus metrics
+| `/metrics` | GET | No | 	Exposes Prometheus metrics
 
 ## System Design
 
 ### Hash + Collision Resolution
 
-[Hashing]((https://en.wikipedia.org/wiki/Hash_function)) is an easy solution to implement, but it doesn't guarantee unique URLs and the collisions must be solved. In case of a collision, a [salt](https://en.wikipedia.org/wiki/Salt_(cryptography)) is added the the hash and the process is repeated until the collision is resolved.
+[Hashing]((https://en.wikipedia.org/wiki/Hash_function)) is a simple and effective method for URL shortening, but it does not guarantee uniqueness. When a collision occurs, we resolve it by adding a [salt](https://en.wikipedia.org/wiki/Salt_(cryptography)) to the hash and rehashing until the collision is resolved.
 
 Pros:
-- Has a fixed URL length
-- Doesn't need a unique ID generator
+- Fixed URL length
+- No need for a unique ID generator
 
 Cons:
-- Solving collision can become costly
+- Handling collisions can become resource-intensive
+- The process of rehashing can be costly
 
 ### Snowflake + Base62
-Base62 is another approach that requires a unique ID generator to be implemented. To implement the Key Generation Service (KGS), I use [Twitter's Snowflake](https://github.com/twitter-archive/snowflake) algorithm to ensure unique ID generation.
+
+An alternative approach is using Base62 encoding in combination with a unique ID generation system, such as [Twitter's Snowflake](https://github.com/twitter-archive/snowflake) algorithm. This method ensures uniqueness by generating time-based, globally unique IDs.
 
 ![Twitter's Snowflake](/assets/snowflake.png)
 
@@ -42,7 +46,7 @@ Pros:
 
 Cons:
 - Requires a unique ID generator
-- Length is not fixed and grows with IDs
+- URL length is not fixed and can increase as IDs grow
 
 ## References
 - [Hash Function](https://en.wikipedia.org/wiki/Hash_function)

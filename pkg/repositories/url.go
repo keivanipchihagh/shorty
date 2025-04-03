@@ -58,31 +58,6 @@ func (r *UrlRepoImp) Create(url *models.URL) error {
 	return err
 }
 
-func (r *UrlRepoImp) GetById(id int64) (*models.URL, error) {
-	query := `
-		SELECT id, original, shortened, created_at, expires_at
-		FROM urls
-		WHERE id = $1
-	`
-	row := r.db.QueryRow(context.Background(), query, id)
-
-	var url models.URL
-	if err := row.Scan(
-		&url.ID,
-		&url.Original,
-		&url.Shortened,
-		&url.CreatedAt,
-		&url.ExpiresAt,
-	); err != nil {
-		if err == pgx.ErrNoRows {
-			return nil, nil
-		}
-		return nil, err
-	}
-
-	return &url, nil
-}
-
 func (r *UrlRepoImp) GetAll() ([]models.URL, error) {
 	query := `
 		SELECT id, original, shortened, created_at, expires_at

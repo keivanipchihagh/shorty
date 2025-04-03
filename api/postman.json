@@ -15,11 +15,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:7070/urls",
+					"raw": "{{domain}}/urls",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "7070",
 					"path": [
 						"urls"
 					]
@@ -45,11 +44,10 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:7070/urls",
+					"raw": "{{domain}}/urls",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "7070",
 					"path": [
 						"urls"
 					]
@@ -66,11 +64,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:7070/metrics",
+					"raw": "{{domain}}/metrics",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "7070",
 					"path": [
 						"metrics"
 					]
@@ -87,14 +84,53 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:7070/urls/7",
+					"raw": "{{domain}}/urls/1907664257260982272",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "7070",
 					"path": [
 						"urls",
-						"7"
+						"1907664257260982272"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Redirect",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/2Gv8GQ9ZWcK2",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"2Gv8GQ9ZWcK2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domain}}/health",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"health"
 					]
 				}
 			},

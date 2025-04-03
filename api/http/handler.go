@@ -2,7 +2,6 @@ package http
 
 import (
 	"net/http"
-	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -42,32 +41,6 @@ func (s *HttpApi) Create(ctx *gin.Context) {
 	}
 
 	ctx.IndentedJSON(http.StatusCreated, url)
-}
-
-// GET: /urls/:id
-func (s *HttpApi) GetById(ctx *gin.Context) {
-
-	// Parse the 'id' parameter
-	id, err := strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.IndentedJSON(http.StatusBadRequest, gin.H{"error": "invalud 'id' parameter"})
-		return
-	}
-
-	// Retrieve URL information from database
-	url, err := s.UrlService.GetById(int64(id))
-	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Internal Error"})
-		logrus.Error(err)
-		return
-	}
-
-	// URL not found
-	if url == nil {
-		ctx.Status(http.StatusNoContent)
-		return
-	}
-	ctx.IndentedJSON(http.StatusBadRequest, url)
 }
 
 // GET: /urls

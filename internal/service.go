@@ -34,7 +34,7 @@ func Start(config *configs.Config) {
 	// Redis
 	redis := redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d", config.Redis.Host, config.Redis.Port),
-		DB: config.Redis.Database,
+		DB:   config.Redis.Database,
 	})
 	_, err := redis.Ping(context.Background()).Result()
 	if err != nil {
@@ -57,7 +57,6 @@ func Start(config *configs.Config) {
 	router.GET("/:shortened", httpApi.Redirect)
 	router.POST("/urls", httpApi.Create)
 	router.GET("/urls", httpApi.GetAll)
-	router.GET("/urls/:id", httpApi.GetById)
 	router.GET("/health", httpApi.Health)
 	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
 

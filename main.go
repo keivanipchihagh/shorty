@@ -3,11 +3,16 @@ package main
 import (
 	"github.com/keivanipchihagh/shorty/internal"
 	"github.com/keivanipchihagh/shorty/internal/configs"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	// Load environment variables
 	config := configs.NewConfig()
-	log.SetFormatter(&log.JSONFormatter{})
+
+	// Set up logging
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetReportCaller(true)
+
 	internal.Start(config)
 }

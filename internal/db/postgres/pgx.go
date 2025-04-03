@@ -3,9 +3,9 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	log "github.com/sirupsen/logrus"
 )
 
 type Option struct {
@@ -46,6 +46,7 @@ func NewPGXPostgres(option Option) *PGXDatabase {
 		log.Panic("unable to ping the database.")
 	}
 
+	log.Info("connected to the database.")
 	return &PGXDatabase{pool}
 }
 

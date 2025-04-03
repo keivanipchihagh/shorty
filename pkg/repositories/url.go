@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/keivanipchihagh/shorty/pkg/models"
 )
@@ -39,6 +40,9 @@ func (r *UrlRepoImp) GetByShortened(shortened string) (*models.URL, error) {
 		&url.CreatedAt,
 		&url.ExpiresAt,
 	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 
@@ -70,6 +74,9 @@ func (r *UrlRepoImp) GetById(id int64) (*models.URL, error) {
 		&url.CreatedAt,
 		&url.ExpiresAt,
 	); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 

@@ -18,15 +18,15 @@ func NewUrlService(UrlRepo repositories.UrlRepo) UrlService {
 
 func (s *UrlService) Create(url *models.URL) error {
 
-	url.CreatedAt = time.Now()
-	url.ExpiresAt = time.Now().Add(time.Hour)
-
 	id, shortened, err := kgs.GenerateId()
 	if err != nil {
 		return err
 	}
-	url.Shortened = shortened
 	url.ID = id
+	url.Shortened = shortened
+
+	url.CreatedAt = time.Now()
+	url.ExpiresAt = time.Now().Add(time.Hour)
 
 	err = s.UrlRepo.Create(url)
 	return err

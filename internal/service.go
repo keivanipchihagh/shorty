@@ -39,7 +39,7 @@ func Start(config *configs.Config) {
 	// Register middlewares
 	router.Use(metrics.PrometheusMetrics())
 	// Register routes
-	router.GET("/r/:shortened", httpApi.Redirect)
+	router.GET("/:shortened", httpApi.Redirect)
 	router.POST("/urls", httpApi.Create)
 	router.GET("/urls", httpApi.GetAll)
 	router.GET("/urls/:id", httpApi.GetById)
